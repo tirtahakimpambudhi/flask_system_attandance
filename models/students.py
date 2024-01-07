@@ -21,7 +21,7 @@ class SupabaseStudents():
             raise error
     def get_students_by_key(self,key :str):
         try:
-            return self.db.table(Config.DATABASE["tables"][0]).select("*").like("name",f"%{key}%").like("major",f"%{key}%").execute()
+            return self.db.table(Config.DATABASE["tables"][0]).select("*").filter("name", "like", f"%*{key}*%").execute()
         except Exception as error:
             logging.error(f"error execution query students raise : {type(error).__name__} - { error}")
             raise error

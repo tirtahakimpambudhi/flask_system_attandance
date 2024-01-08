@@ -19,12 +19,6 @@ class SupabaseAbsensi():
         except Exception as error:
             logging.error(f"error execution query absensi raise : {type(error).__name__} - { error}")
             raise error
-    def get_absence_by_key(self,key :str):
-        try:
-            return self.db.table(Config.DATABASE["tables"][0]).select("*").like("name",f"%{key}%").like("major",f"%{key}%").execute()
-        except Exception as error:
-            logging.error(f"error execution query absensi raise : {type(error).__name__} - { error}")
-            raise error
     def insert_absence(self,student :dict):
         try:
             return self.db.table(Config.DATABASE["tables"][1]).insert(student).execute()

@@ -3,12 +3,12 @@ import uuid
 
 from db.db import new_connection
 from config.config import Config
-from models.students import Students
+from models.students import SupabaseStudents
 
 class ModelsTestCase(unittest.TestCase):
     __config = Config()
     __pool = new_connection(__config.DATABASE["url"], __config.DATABASE["api_key"])
-    models_students =  Students(pool=__pool)
+    models_students =  SupabaseStudents(pool=__pool)
     TOTAL_DUMMY_DATA = 10
     dummy_id :int;
     @classmethod
@@ -16,12 +16,12 @@ class ModelsTestCase(unittest.TestCase):
         for i in range(cls.TOTAL_DUMMY_DATA):
             cls.dummy_id = uuid.uuid1().int
             nis_dummy = 34672+i
-            cls.__pool.table(cls.__config.DATABASE["table"]).insert(
+            cls.__pool.table(cls.__config.DATABASE["tables"][0]).insert(
                 {"id": cls.dummy_id,"nis":nis_dummy, "name": f"dummy name to - {i}", "major": f"dummy major {i}", "number_absence" :i,"major": "SIJA","year_graduated" : 2026}).execute()
 
     @classmethod
     def tearDown(cls):
-        cls.__pool.table(cls.__config.DATABASE["table"]).delete().neq("id",1).execute()
+        cls.__pool.table(cls.__config.DATABASE["tables"][0]).delete().neq("id",1).execute()
 
     def test_get_all_students(self):
         test_cases = [

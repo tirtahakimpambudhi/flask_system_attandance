@@ -1,4 +1,4 @@
-.PHONY: linux_venv windows_venv gen freeze install gen_test run
+.PHONY: linux_venv windows_venv gen freeze install gen_test run test
 
 path_linux_venv = ./venv/bin/activate
 path_windows_venv = venv\Scripts\activate
@@ -28,6 +28,10 @@ install:
 
 gen_test:
 	cp .env test/.env
+
+test:
+	python3 -m unittest discover
+
 
 run:
 	$(activate_venv) && python3 app.py

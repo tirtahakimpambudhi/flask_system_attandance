@@ -7,7 +7,7 @@ class AppLogging:
             self.init_app(app)
 
     def init_app(self, app):
-        FORMAT = '%(asctime)s [%(levelname)-5.5s] [%(funcName)30s()] %(message)s'
+        FORMAT = '%(asctime)s [%(levelname)-5.5s] [%(funcName)10s()] %(message)s'
         logFormatter = logging.Formatter(FORMAT)
         app.logger = logging.getLogger()
         app.logger.setLevel(logging.DEBUG)

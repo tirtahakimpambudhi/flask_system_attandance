@@ -1,5 +1,4 @@
 
-from config.config import Config
 from supabase import create_client, Client
 import logging
 
@@ -19,3 +18,4 @@ def new_connection(supabase_url: str, supabase_api_key: str) -> Client:
     except Exception as e:
         logging.error("Failed to create Supabase client connection: %s", e)
         raise e
+

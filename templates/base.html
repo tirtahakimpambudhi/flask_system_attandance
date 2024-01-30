@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+<section>
+    {% include("partials/_navigation.html") %}
+  <header>
+    {% block header %}{% endblock header %}
+  </header>
+  <main>
+    {% block content %}
+    {% endblock content %}
+  </main>
+</section>
+</body>
+</html>

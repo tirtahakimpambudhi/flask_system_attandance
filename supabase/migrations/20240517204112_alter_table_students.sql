@@ -14,3 +14,4 @@ ADD COLUMN nis INT NOT NULL;
 ALTER TABLE students
 ALTER COLUMN major TYPE majors
 USING major::text::majors;
+

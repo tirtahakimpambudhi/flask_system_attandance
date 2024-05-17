@@ -10,6 +10,10 @@ END $$;
 ALTER TABLE students
 ADD COLUMN nis INT NOT NULL;
 
+-- Add the year graduated
+ALTER TABLE students
+ADD COLUMN year_graduated INT NOT NULL;
+
 -- Alter the major column to use the new enum type majors
 ALTER TABLE students
 ALTER COLUMN major TYPE majors

@@ -6,6 +6,7 @@ class Config:
         if os.path.exists(__path):
             from dotenv import load_dotenv
             load_dotenv(dotenv_path=__path)
+        SECRET_KEY :str = os.environ.get("SECRET_KEY")
         APP :dict = {
             "env" : os.environ.get("APP_ENV")
         }

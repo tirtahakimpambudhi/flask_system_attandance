@@ -1,0 +1,73 @@
+<p>
+  <video id="video" width="320" height="240" autoplay></video>
+  <canvas id="canvas" width="320" height="240" style="display: none"></canvas>
+</p>
+<form action="" method="post">
+  <input type="hidden" id="photo" name="photo" />
+</form>
+
+<script>
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const context = canvas.getContext('2d');
+  let matchFound = false; // Variable to track if a match is found
+
+  // Access the webcam
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+    })
+    .catch(err => {
+      console.error("Error accessing the webcam: ", err);
+    });
+
+  // Function to convert data URL to Blob
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+  }
+
+  // Function to capture and send the image
+  function captureAndSend() {
+    if (!matchFound) { // Check if match is not found
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataURL = canvas.toDataURL('image/png');
+      const photoBlob = dataURItoBlob(dataURL);
+
+      const formData = new FormData();
+      formData.append('photo', photoBlob, 'login.jpg');
+
+      fetch("/match", {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.match) {
+          matchFound = true; // Set matchFound to true
+          console.log("Match found. Interval stopped.");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+  }
+
+  const timeout = parseInt(`{{ call["timeout"] }}`);
+  const timeinterval = parseInt(`{{ call["interval"] }}`);
+
+  const interval = setInterval(captureAndSend, timeinterval);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    console.log("Timeout reached. Interval stopped.");
+  }, timeout);
+</script>

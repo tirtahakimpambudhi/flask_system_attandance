@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h2>{% block title %}Register{% endblock title %}</h2>
+{% endblock header %}
+
+{% block content %}
+  <h1>Add New Students</h1>
+  <form action="/register" method="post" enctype="multipart/form-data" onsubmit="prepareForm()">
+      {{ form.csrf_token }}
+
+      <p>
+          {{ form.nis.label }}
+          {{ form.nis(size=20) }}
+      </p>
+      {% if form.nis.errors %}
+          <ul class="errors">
+              {% for error in form.nis.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+
+      <p>
+          {{ form.name.label }}
+          {{ form.name(size=20) }}
+      </p>
+      {% if form.name.errors %}
+          <ul class="errors">
+              {% for error in form.name.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+
+      <p>
+          {{ form.number_absence.label }}
+          {{ form.number_absence(size=20) }}
+      </p>
+      {% if form.number_absence.errors %}
+          <ul class="errors">
+              {% for error in form.number_absence.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+
+      <p>
+          {{ form.major.label }}
+          {{ form.major }}
+      </p>
+      {% if form.major.errors %}
+          <ul class="errors">
+              {% for error in form.major.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+
+      <p>
+          {{ form.year_graduated.label }}
+          {{ form.year_graduated(size=20) }}
+      </p>
+      {% if form.year_graduated.errors %}
+          <ul class="errors">
+              {% for error in form.year_graduated.errors %}
+                  <li>{{ error }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+
+      <p>
+          <video id="video" width="320" height="240" autoplay></video>
+          <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+          <button type="button" onclick="capture()">Capture Photo</button>
+      </p>
+
+      <input type="hidden" id="photo" name="photo">
+
+      <p>
+          <input type="submit" value="Register">
+      </p>
+  </form>
+
+<script src="{{ url_for('static', filename='js/capture.js') }}"></script>
+{% endblock content %}

@@ -125,7 +125,8 @@
             <h5 class="modal-title" id="detailModalLabel">Student Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body text-center">
+            <img id="studentPhoto" src="" alt="Profile Photo" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px;">
             <p><strong>Name:</strong> <span id="studentName"></span></p>
             <p><strong>NIS:</strong> <span id="studentNIS"></span></p>
             <p><strong>Attendance Number:</strong> <span id="studentAttendanceNumber"></span></p>
@@ -165,6 +166,7 @@
         document.getElementById('studentNIS').textContent = nis;
         document.getElementById('studentAttendanceNumber').textContent = attendanceNumber;
         document.getElementById('studentMajor').textContent = major;
+        document.getElementById('studentPhoto').src = photoUrl;
       }
     </script>
   </body>

@@ -1,6 +1,26 @@
-<nav>
-    <ul>
-      <li><a href="{{ url_for('main.index') }}">Home</a></li>
-      <li><a href="{{ url_for('main.about') }}">About</a></li>
-    </ul>
-</nav>
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top">
+      <div class="container d-flex align-items-center">
+        <h1 class="logo me-auto"><a href="{{ url_for('main.index') }}">Ngabsen</a></h1>
+
+        <nav id="navbar" class="navbar order-last order-lg-0">
+          <ul>
+            <li><a class="nav-link scrollto active" href="{{url_for('main.index')}}#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="{{url_for('main.index')}}#about">About</a></li>
+            <li><a class="nav-link scrollto" href="{{url_for('main.index')}}#members">Members</a></li>
+            <li><a class="nav-link scrollto" href="{{url_for('students.index')}}">Students</a></li>
+            <li><a class="nav-link scrollto" href="{{url_for('absence.index')}}">Absen</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+        <!-- .navbar -->
+
+        <a href="{{url_for('students.login')}}" class="appointment-btn scrollto"
+          ><span class="d-md-none">Log In</span><span class="d-none d-md-inline">Log In</span></a
+        >
+        <a href="{{url_for('students.create')}}" class="appointment-btn scrollto"
+          style="background-color: transparent; border: 1px solid #1977cc; color: #2c4964;"><span class="d-md-none">Register</span><span class="d-none d-md-inline">Register</span></a
+        >
+      </div>
+    </header>
+    <!-- End Header -->

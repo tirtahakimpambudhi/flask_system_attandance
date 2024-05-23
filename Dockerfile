@@ -3,7 +3,7 @@ FROM python:3.10.12-slim-bullseye AS build
 ENV PATH="/app/venv/bin:$PATH" APP_ENV="development" SUPABASE_URL="" SUPABASE_API_KEY="" SUPABASE_TABLE=""
 
 RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential gcc make
+RUN apt-get install -y --no-install-recommends build-essential gcc make cmake
 
 
 WORKDIR /app

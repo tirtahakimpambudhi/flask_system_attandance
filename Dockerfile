@@ -10,7 +10,8 @@ ENV PATH="/app/venv/bin:$PATH" \
     SUPABASE_CONNECTION_STRING="user=postgres.mxrzqqbsnjytgxzwxlyb password=t1rt@h4k1mp@mbudh1 host=aws-0-ap-southeast-1.pooler.supabase.com port=5432 dbname=postgres" \
     TIME_OUT_CALL_API="30000" \
     TIME_INTERVAL_CALL_API="1000" \
-    UPLOAD_PATH="./static/upload"
+    UPLOAD_PATH="./static/upload" \
+    LOG_PATH="./log/app.log"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential gcc make cmake
@@ -40,7 +41,6 @@ ENV PATH=${PATH} \
 
 WORKDIR /app
 COPY --from=build /app/venv /app/venv
-
 COPY . .
 
 CMD ["python3","/app/app.py"]

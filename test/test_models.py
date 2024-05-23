@@ -60,7 +60,5 @@ class ModelsTestCase(unittest.TestCase):
                 except Exception as e:
                     self.assertTrue(case["is_error"])
 
-
-
 if __name__ == '__main__':
     unittest.main()

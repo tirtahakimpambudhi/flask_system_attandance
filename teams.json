@@ -1,0 +1,42 @@
+[
+    {
+        "name" : "Tirta Hakim Pambudhi",
+        "profile" : "/static/assets/img/members/tirta-profile.png",
+        "role" : "Backend & Project Leader",
+        "media_sosial": {
+            "github" : "https://github.com/tirtahakimpambudhi",
+            "instagram" : ""
+        },
+        "description" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur nobis illum, odio quod nam iure mollitia fuga maiores excepturi voluptates."
+    },
+    {
+        "name" : "Beby Kurniawan",
+        "profile" : "/static/assets/img/members/beby-profile.jpg",
+        "role" : "Frontend & UI UX",
+        "media_sosial": {
+            "github" : "https://github.com/Bebykurniawan",
+            "instagram" : ""
+        },
+        "description" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur nobis illum, odio quod nam iure mollitia fuga maiores excepturi voluptates."
+    },
+    {
+        "name" : "Khalif Rahman",
+        "profile" : "/static/assets/img/members/khalif-profile.jpg",
+        "role" : "Proposal Maker",
+        "media_sosial": {
+            "github" : "https://github.com/tirtahakimpambudhi",
+            "instagram" : ""
+        },
+        "description" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur nobis illum, odio quod nam iure mollitia fuga maiores excepturi voluptates."
+    },
+    {
+        "name" : "Muhammad Islami Pasha",
+        "profile" : "/static/assets/img/members/pasha-profile.jpg",
+        "role" : "Proposal Maker",
+        "media_sosial": {
+            "github" : "https://github.com/tirtahakimpambudhi",
+            "instagram" : ""
+        },
+        "description" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur nobis illum, odio quod nam iure mollitia fuga maiores excepturi voluptates."
+    }
+]

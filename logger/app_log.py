@@ -1,3 +1,4 @@
+import os
 import logging
 
 class AppLogging:
@@ -12,9 +13,17 @@ class AppLogging:
         app.logger = logging.getLogger()
         app.logger.setLevel(logging.DEBUG)
 
-        fileHandler = logging.FileHandler('log/app.log')
-        fileHandler.setFormatter(logFormatter)
-        app.logger.addHandler(fileHandler)
+        try:
+            # Membuat direktori 'log' jika tidak ada
+            os.makedirs('log', exist_ok=True)
+
+            fileHandler = logging.FileHandler('log/app.log')
+            fileHandler.setFormatter(logFormatter)
+            app.logger.addHandler(fileHandler)
+
+        except Exception as e:
+            # Tangani kesalahan jika gagal membuat direktori atau file log
+            print(f"Error creating log directory or file: {e}")
 
         consoleHandler = logging.StreamHandler()
         consoleHandler.setFormatter(logFormatter)

@@ -1,86 +1,133 @@
 {% extends 'base.html' %}
-
-{% block header %}
-  <h2>{% block title %}Register{% endblock title %}</h2>
-{% endblock header %}
+{% block title %}Register{% endblock title %}
 
 {% block content %}
-  <h1>Add New Students</h1>
-  <form action="/register" method="post" enctype="multipart/form-data" onsubmit="prepareForm()">
-      {{ form.csrf_token }}
-
+<!-- ======= Contact Section ======= -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="section-title">
+      <h2>Registration</h2>
       <p>
-          {{ form.nis.label }}
-          {{ form.nis(size=20) }}
+        Magnam dolores commodi suscipit. Necessitatibus eius consequatur
+        ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam
+        quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea.
+        Quia fugiat sit in iste officiis commodi quidem hic quas.
       </p>
-      {% if form.nis.errors %}
-          <ul class="errors">
-              {% for error in form.nis.errors %}
+    </div>
+  </div>
+  <div class="container">
+    <div class="row justify-content-center mt-5">
+      <div class="col-lg-8">
+        <form
+          id="registrationForm"
+          action="{{ url_for('students.create') }}"
+          method="post"
+          enctype="multipart/form-data"
+          role="form"
+          onsubmit="return validateForm()"
+        >
+          {{ form.csrf_token() }}
+          <div class="row">
+            <div class="col-md-12 form-group">
+              {{ form.name.label(class="form-label") }}
+              {{ form.name(class="form-control", placeholder="Name") }}
+              {% if form.name.errors %}
+                <ul class="list-unstyled text-danger mt-2">
+                  {% for error in form.name.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+            <div class="col-md-12 form-group mt-3">
+              {{ form.nis.label(class="form-label") }}
+              {{ form.nis(class="form-control", placeholder="NIS", maxlength="5") }}
+              {% if form.nis.errors %}
+                <ul class="list-unstyled text-danger mt-2">
+                  {% for error in form.nis.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+          <div class="form-group mt-3">
+            {{ form.number_absence.label(class="form-label") }}
+            {{ form.number_absence(class="form-control", placeholder="Number", maxlength="2") }}
+            {% if form.number_absence.errors %}
+              <ul class="list-unstyled text-danger mt-2">
+                {% for error in form.number_absence.errors %}
                   <li>{{ error }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
-
-      <p>
-          {{ form.name.label }}
-          {{ form.name(size=20) }}
-      </p>
-      {% if form.name.errors %}
-          <ul class="errors">
-              {% for error in form.name.errors %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+          <div class="form-group mt-3">
+            {{ form.major.label(class="form-label") }}
+            {{ form.major(class="form-control") }}
+            {% if form.major.errors %}
+              <ul class="list-unstyled text-danger mt-2">
+                {% for error in form.major.errors %}
                   <li>{{ error }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
-
-      <p>
-          {{ form.number_absence.label }}
-          {{ form.number_absence(size=20) }}
-      </p>
-      {% if form.number_absence.errors %}
-          <ul class="errors">
-              {% for error in form.number_absence.errors %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+          <div class="form-group mt-3">
+            {{ form.year_graduated.label(class="form-label") }}
+            {{ form.year_graduated(class="form-control", placeholder="Year Graduated") }}
+            {% if form.year_graduated.errors %}
+              <ul class="list-unstyled text-danger mt-2">
+                {% for error in form.year_graduated.errors %}
                   <li>{{ error }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+          <div class="form-group mt-3">
+            <div class="mb-3">
+              <label for="editPhoto" class="form-label">Photo</label>
+              <input type="file" class="form-control" disabled id="editPhoto" name="photo" accept="image/*" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="openCamera()">Verify Face</button>
+            <div id="verificationResult" class="mt-3"></div>
+          </div>
+          <div class="mt-3 text-center">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <p>
-          {{ form.major.label }}
-          {{ form.major }}
-      </p>
-      {% if form.major.errors %}
-          <ul class="errors">
-              {% for error in form.major.errors %}
-                  <li>{{ error }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
 
-      <p>
-          {{ form.year_graduated.label }}
-          {{ form.year_graduated(size=20) }}
-      </p>
-      {% if form.year_graduated.errors %}
-          <ul class="errors">
-              {% for error in form.year_graduated.errors %}
-                  <li>{{ error }}</li>
-              {% endfor %}
-          </ul>
-      {% endif %}
 
-      <p>
-          <video id="video" width="320" height="240" autoplay></video>
-          <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
-          <button type="button" onclick="capture()">Capture Photo</button>
-      </p>
 
-      <input type="hidden" id="photo" name="photo">
-
-      <p>
-          <input type="submit" value="Register">
-      </p>
-  </form>
-
-<script src="{{ url_for('static', filename='js/capture.js') }}"></script>
+<!-- End Contact Section -->
 {% endblock content %}
+
+{% block modal %}
+<div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cameraModalLabel">Register Face</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <video id="video" width="100%" autoplay></video>
+        <button class="btn btn-primary mt-3" onclick="capturePhoto()">Capture Photo</button>
+        <canvas id="canvas" style="display: none;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock modal %}
+
+{% block script %}
+<script>
+  const VERIFY_URL = `{{url_for('students.verify_face')}}`;
+</script>
+<script src="{{url_for('static',filename='js/register.js')}}"></script>
+{% endblock script %}

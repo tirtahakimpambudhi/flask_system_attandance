@@ -1,73 +1,97 @@
-<p>
-  <video id="video" width="320" height="240" autoplay></video>
-  <canvas id="canvas" width="320" height="240" style="display: none"></canvas>
-</p>
-<form action="" method="post">
-  <input type="hidden" id="photo" name="photo" />
-</form>
+{% extends 'base.html'%}
 
+{% block content %}
+      <!-- ======= Log In Section ======= -->
+      <section id="contact" class="contact">
+        <div class="container">
+          <div class="section-title">
+            <h2>Log In</h2>
+            <p>
+              Magnam dolores commodi suscipit. Necessitatibus eius consequatur
+              ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam
+              quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea.
+              Quia fugiat sit in iste officiis commodi quidem hic quas.
+            </p>
+          </div>
+        </div>
+        <div class="text-center mt-3">
+          <button id="btn-face-recognition" class="btn btn-outline-primary mb-3">Face Recognition</button>
+          <button id="btn-form-login" class="btn btn-outline-primary mb-3">Form Login</button>
+        </div>
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div id="login-slider" class="carousel slide" data-bs-interval="false">
+                <div class="carousel-inner">
+                  <!-- Face Recognition Slide -->
+                  <div class="carousel-item active">
+                    <div id="camera" class="text-center">
+                      <h2 class="mb-4">Sistem Absensi Berbasis Face Recognition</h2>
+                      <video id="video" class="img-fluid" autoplay></video>
+                      <button id="snap" class="btn btn-primary btn-lg mt-3" onclick="capturePhoto();">Ambil Gambar</button>
+                      <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                    </div>
+                  </div>
+                  <!-- Form Slide -->
+                  <div class="carousel-item">
+                    <form action="{{ url_for('students.login') }}" method="post" role="form">
+                      {{ form.csrf_token() }}
+                      <div class="row">
+                        <div class="col-md-12 form-group">
+                          {{ form.nis.label(class="form-label") }}
+                          {{ form.nis(class="form-control", placeholder="NIS", maxlength="5") }}
+                          {% if form.nis.errors %}
+                            <ul class="list-unstyled text-danger mt-2">
+                              {% for error in form.nis.errors %}
+                                <li>{{ error }}</li>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </div>
+                      </div>
+                      <div class="form-group mt-3">
+                        {{ form.status.label(class="form-label") }}
+                        {{ form.status(class="form-control") }}
+                        {% if form.status.errors %}
+                          <ul class="list-unstyled text-danger mt-2">
+                            {% for error in form.status.errors %}
+                              <li>{{ error }}</li>
+                            {% endfor %}
+                          </ul>
+                        {% endif %}
+                      </div>
+                      <div class="mt-3 text-center">
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <!-- Controls -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#login-slider" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#login-slider" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <hr style="margin: 50px 0;">
+        <div class="text-center" style="margin-top: -20px;"></div>
+  
+      </section>
+      <!-- End Log In Section -->
+{% endblock content %}
+
+{% block script %}
 <script>
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  let matchFound = false; // Variable to track if a match is found
-
-  // Access the webcam
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      video.srcObject = stream;
-    })
-    .catch(err => {
-      console.error("Error accessing the webcam: ", err);
-    });
-
-  // Function to convert data URL to Blob
-  function dataURItoBlob(dataURI) {
-    const byteString = atob(dataURI.split(',')[1]);
-    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-    const ab = new ArrayBuffer(byteString.length);
-    const ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-  }
-
-  // Function to capture and send the image
-  function captureAndSend() {
-    if (!matchFound) { // Check if match is not found
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataURL = canvas.toDataURL('image/png');
-      const photoBlob = dataURItoBlob(dataURL);
-
-      const formData = new FormData();
-      formData.append('photo', photoBlob, 'login.jpg');
-
-      fetch("/match", {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        if (data.match) {
-          matchFound = true; // Set matchFound to true
-          console.log("Match found. Interval stopped.");
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-    }
-  }
-
-  const timeout = parseInt(`{{ call["timeout"] }}`);
-  const timeinterval = parseInt(`{{ call["interval"] }}`);
-
-  const interval = setInterval(captureAndSend, timeinterval);
-
-  setTimeout(() => {
-    clearInterval(interval);
-    console.log("Timeout reached. Interval stopped.");
-  }, timeout);
+  const ABSEN_MATCH_URL = `{{url_for('absence.match')}}`;
+  const LOGIN_URL = `{{url_for('students.login')}}`;
+  const ABSEN_INDEX = `{{url_for('absence.index')}}`;
 </script>
+<script src="{{url_for('static',filename='js/login.js')}}"></script>
+{% endblock script %}

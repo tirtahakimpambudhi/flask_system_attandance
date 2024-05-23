@@ -1,0 +1,141 @@
+{%extends 'base.html'%}
+{%block title%}Students{%endblock title%}
+
+{%block content%}
+<div class="container mt-5 pt-5 heading">
+  <h2 class="mb-4 text-center" style="color: #2c4964;">Registered Students</h2>
+  <!-- Search bar to search student names -->
+  <form class="d-flex mb-4" id="searchForm">
+    <input class="form-control me-2" type="search" id="searchInput" placeholder="Search by name" aria-label="Search">
+    <button class="btn" type="submit" style="background-color: #1977cc; color: white;">Search</button>
+  </form>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">No.</th>
+        <th scope="col">Name</th>
+        <th scope="col">NIS</th>
+        <th scope="col">Number Absence</th>
+        <th scope="col">Major</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %} 
+      <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ student.name }}</td>
+          <td>{{ student.nis }}</td>
+          <td>{{ student.number_absence }}</td>
+          <td>{{ student.major }}</td>
+          <td>
+              {% set src = url_for('static', filename='upload/' ~ student.id ~ '.png') %}
+              <button class="btn btn-info" style="background-color: #1977cc; color: white;" data-bs-toggle="modal" data-bs-target="#detailModal" onclick="showDetails('{{ student.name }}', '{{ student.nis }}', '{{ student.number_absence }}', '{{ student.major }}','{{ student.year_graduated}}', '{{ src }}')">Detail</button>
+              <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal" onclick="prepareEdit('{{student.id}}','{{ student.name }}', '{{ student.nis }}', '{{ student.number_absence }}', '{{ student.major }}','{{ student.year_graduated}}', '{{ src }}')">Edit</button>
+          </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{%endblock content%}
+
+{% block modal %}
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailModalLabel">Student Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="studentPhoto" src="" alt="Profile Photo" class="img-fluid rounded-circle mb-3 object-fit-cover " style="width: 200px; height: 200px;">
+        <p><strong>Name:</strong> <span id="studentName"></span></p>
+        <p><strong>NIS:</strong> <span id="studentNIS"></span></p>
+        <p><strong>Number Absence:</strong> <span id="studentAttendanceNumber"></span></p>
+        <p><strong>Major:</strong> <span id="studentMajor"></span></p>
+        <p><strong>Year Graduated:</strong><span id="studentYear"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Student Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" method="post" action="{{ url_for('students.create') }}" onsubmit="saveChange(event)">
+          <div class="mb-3">
+            <label for="editName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="editName" name="name" required>
+          </div>
+          <div class="mb-3">
+            <label for="editNIS" class="form-label">NIS</label>
+            <input type="text" class="form-control" id="editNIS" name="nis" required>
+          </div>
+          <div class="mb-3">
+            <label for="editAttendanceNumber" class="form-label">Number Absence</label>
+            <input type="text" class="form-control" id="editAttendanceNumber" name="number_absence" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="major">Major</label>
+            <select class="form-control" id="major" name="major" required=""><option selected="" value="SIJA">SIJA</option><option value="DKV">DKV</option><option value="MM">MM</option><option value="TKJ">TKJ</option><option value="TITL">TITL</option><option value="TAV">TAV</option><option value="TKR">TKR</option><option value="TP">TP</option><option value="KGSP">KGSP</option><option value="GEOMATIKA">GEOMATIKA</option></select>
+          </div> 
+          <div class="mb-3">
+            <label for="editYearGraduated" class="form-label">Year Graduated</label>
+            <input type="text" class="form-control" id="editYearGradueated" name="year_graduated" required>
+          </div>
+          <div class="mb-3">
+            <label for="editPhoto" class="form-label">Photo</label>
+            <input type="file" class="form-control" id="editPhoto" name="photo" accept="image/*" disabled>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="openCamera()">Add Face</button>
+          <div id="verificationResult" class="mt-3"></div>
+          <div class="mt-3">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cameraModalLabel">Face Verification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <video id="video" width="100%" autoplay></video>
+        <button class="btn btn-primary mt-3" id="buttonCapture" onclick="capturePhoto()">Capture Photo</button>
+        <canvas id="canvas" style="display: none;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock modal %}
+
+{% block script %}
+<script>
+  const VERIFY_URL = `{{ url_for('students.verify_face') }}`;
+  const EDIT_URL = (id) => `{{ url_for('students.edit',id='9876543210987654321098765432109876543210') }}`.replace('9876543210987654321098765432109876543210',id);
+  const SHOW_URL = (key) => `{{ url_for('students.show') }}?s=`+key;
+  const MATCH_ID_URL = (id) => `{{ url_for('students.match_by_id',id='9876543210987654321098765432109876543210') }}`.replace('9876543210987654321098765432109876543210',id);
+  const UPLOAD_FILEPATH = (id) => `{{url_for('static',filename='upload/')}}` + id + '.png';
+</script>
+<script src="{{url_for('static',filename='js/students.js')}}"></script>
+<script src="{{url_for('static',filename='js/face_recognition.js')}}"></script>
+<script src="{{url_for('static',filename='js/search_students.js')}}"></script>
+{% endblock script %}

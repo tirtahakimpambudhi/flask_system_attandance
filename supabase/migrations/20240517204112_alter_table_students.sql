@@ -8,7 +8,7 @@ END $$;
 
 -- Add the nis column to the students table
 ALTER TABLE students
-ADD COLUMN nis INT NOT NULL;
+ADD COLUMN nis INT UNIQUE NOT NULL;
 
 -- Add the year graduated
 ALTER TABLE students

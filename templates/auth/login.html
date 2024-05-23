@@ -45,15 +45,15 @@
       .toast-container {
         position: fixed;
         top: 0;
-        right: 0;
-        z-index: 1055; 
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1055;
         padding: 1rem;
       }
-
       .active-btn {
-      background-color: #1977cc !important; /* sesuaikan dengan warna yang diinginkan */
-      color: white !important;
-    }
+        background-color: #1977cc !important; /* sesuaikan dengan warna yang diinginkan */
+        color: white !important;
+      }
     </style>
   </head>
 
@@ -82,139 +82,96 @@
       </div>
     </header>
     <!-- End Header -->
-      <!-- ======= Log In Section ======= -->
-      <div class="toast-container">
-        <div class="toast bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header bg-danger text-white">
-            <strong class="me-auto">Error</strong>
-            <small>11 mins ago</small>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div class="toast-body">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti vel vero similique, nam consectetur error culpa quisquam dolor harum.
-          </div>
+    <!-- ======= Log In Section ======= -->
+    <div class="toast-container">
+      <div class="toast bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+          <strong class="me-auto">Error</strong>
+          <small>11 mins ago</small>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti vel vero similique, nam consectetur error culpa quisquam dolor harum.
         </div>
       </div>
-      <section id="contact" class="contact">
-        <div class="container">
-          <div class="section-title">
-            <h2>Log In</h2>
-            <p>
-              Magnam dolores commodi suscipit. Necessitatibus eius consequatur
-              ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam
-              quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea.
-              Quia fugiat sit in iste officiis commodi quidem hic quas.
-            </p>
-          </div>
+    </div>
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-title">
+          <h2>Log In</h2>
+          <p>
+            Magnam dolores commodi suscipit. Necessitatibus eius consequatur
+            ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam
+            quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea.
+            Quia fugiat sit in iste officiis commodi quidem hic quas.
+          </p>
         </div>
-        <div class="text-center mt-3">
-          <button id="btn-face-recognition" class="btn btn-outline-primary mb-3">Face Recognition</button>
-          <button id="btn-form-login" class="btn btn-outline-primary mb-3">Form Login</button>
-        </div>
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-md-8">
-              <div id="login-slider" class="carousel slide" data-bs-interval="false">
-                <div class="carousel-inner">
-                  <!-- Face Recognition Slide -->
-                  <div class="carousel-item active">
-                    <div id="camera" class="text-center">
-                      <h2 class="mb-4">Sistem Absensi Berbasis Face Recognition</h2>
-                      <video id="video" class="img-fluid" autoplay></video>
-                      <button id="snap" class="btn btn-primary btn-lg mt-3">Ambil Gambar</button>
-                      <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-                    </div>
-                  </div>
-                  <!-- Form Slide -->
-                  <div class="carousel-item">
-                    <form
-                      action="forms/contact.php"
-                      method="post"
-                      role="form"
-                      class="php-email-form"
-                    >
-                      <div class="row">
-                        <div class="col-md-12 form-group">
-                          <input
-                            type="text"
-                            name="name"
-                            class="form-control"
-                            id="name"
-                            placeholder="Name"
-                            required
-                          />
-                        </div>
-                        <div class="col-md-12 form-group mt-3">
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="NIS"
-                            id="NIS"
-                            placeholder="NIS"
-                            required
-                            maxlength="5"
-                          />
-                        </div>
-                      </div>
-                      <div class="form-group mt-3">
-                        <input
-                          type="text"
-                          class="form-control"
-                          name="absen"
-                          id="absen"
-                          placeholder="Number"
-                          required
-                          maxlength="2"
-                        />
-                      </div>
-                      <div class="form-group mt-3">
-                        <select class="form-control" name="department" required>
-                          <option value="">Select Major</option>
-                          <option value="SIJA">SIJA</option>
-                          <option value="DKV">DKV</option>
-                          <option value="MM">MM</option>
-                          <option value="TKJ">TKJ</option>
-                          <option value="TITL">TITL</option>
-                          <option value="TAV">TAV</option>
-                          <option value="TKR">TKR</option>
-                          <option value="TP">TP</option>
-                          <option value="KGSP">KGSP</option>
-                          <option value="GEOMATIKA">GEOMATIKA</option>
-                        </select>
-                      </div>
-                      <div class="my-3">
-                        <div class="loading">Loading</div>
-                        <div class="error-message"></div>
-                        <div class="sent-message">
-                          Your message has been sent. Thank you!
-                        </div>
-                      </div>
-                      <div class="text-center">
-                        <button type="submit">Submit</button>
-                      </div>
-                    </form>
+      </div>
+      <div class="text-center mt-3">
+        <button id="btn-face-recognition" class="btn btn-outline-primary mb-3">Face Recognition</button>
+        <button id="btn-form-login" class="btn btn-outline-primary mb-3">Form Login</button>
+      </div>
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8">
+            <div id="login-slider" class="carousel slide" data-bs-interval="false">
+              <div class="carousel-inner">
+                <!-- Face Recognition Slide -->
+                <div class="carousel-item active">
+                  <div id="camera" class="text-center">
+                    <h2 class="mb-4">Sistem Absensi Berbasis Face Recognition</h2>
+                    <video id="video" class="img-fluid" autoplay></video>
+                    <button id="snap" class="btn btn-primary btn-lg mt-3">Ambil Gambar</button>
+                    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
                   </div>
                 </div>
-                <!-- Controls -->
-                <button class="carousel-control-prev" type="button" data-bs-target="#login-slider" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#login-slider" data-bs-slide="next">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                  <span class="visually-hidden">Next</span>
-                </button>
+                <!-- Form Slide -->
+                <div class="carousel-item">
+                  <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                    <div class="row">
+                      <div class="col-md-12 form-group">
+                        <input type="text" class="form-control" name="NIS" id="NIS" placeholder="NIS" required maxlength="5" />
+                      </div>
+                    </div>
+                    <div class="form-group mt-3">
+                      <select class="form-control" name="attendance" required>
+                        <option value="">Select Attendance</option>
+                        <option value="hadir">Hadir</option>
+                        <option value="tidak hadir">Tidak Hadir</option>
+                      </select>
+                    </div>
+                    <div class="my-3">
+                      <div class="loading">Loading</div>
+                      <div class="error-message"></div>
+                      <div class="sent-message">
+                        Your message has been sent. Thank you!
+                      </div>
+                    </div>
+                    <div class="text-center">
+                      <button type="submit">Submit</button>
+                    </div>
+                  </form>
+                </div>
               </div>
-              
+              <!-- Controls -->
+              <button class="carousel-control-prev" type="button" data-bs-target="#login-slider" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#login-slider" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
             </div>
           </div>
         </div>
+      </div>
 
-        <hr style="margin: 50px 0;">
-        <div class="text-center" style="margin-top: -20px;"></div>
+      <hr style="margin: 50px 0;">
+      <div class="text-center" style="margin-top: -20px;"></div>
 
-      </section>
-      <!-- End Log In Section -->
+    </section>
+    <!-- End Log In Section -->
     </main>
     <!-- End #main -->
 
@@ -222,7 +179,7 @@
     <footer id="footer">
       <div class="footer-top">
         <div class="container">
-          
+        
       <div class="container d-md-flex py-4">
         <div class="me-md-auto text-center text-md-start">
           <div class="copyright">
@@ -238,11 +195,7 @@
     <!-- End Footer -->
 
     <div id="preloader"></div>
-    <a
-      href="#"
-      class="back-to-top d-flex align-items-center justify-content-center"
-      ><i class="bi bi-arrow-up-short"></i
-    ></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
     <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -259,27 +212,30 @@
         return new bootstrap.Toast(toastEl)
       })
       toastList.forEach(toast => toast.show())
+      
       function setActiveButton(buttonId) {
-       var buttons = document.querySelectorAll('.btn'); 
-       buttons.forEach(function(button) {
-         if (button.id === buttonId) {
-           button.classList.add('active-btn'); 
-         } else {
-           button.classList.remove('active-btn'); 
-         }
-       });
-     }
-     document.getElementById('btn-face-recognition').addEventListener('click', function () {
-       setActiveButton('btn-face-recognition');
-       var carousel = new bootstrap.Carousel(document.getElementById('login-slider'));
-       carousel.to(0); 
-     });
- 
-     document.getElementById('btn-form-login').addEventListener('click', function () {
-       setActiveButton('btn-form-login');
-       var carousel = new bootstrap.Carousel(document.getElementById('login-slider'));
-       carousel.to(1); 
-     });
+        var buttons = document.querySelectorAll('.btn'); // dapatkan semua button
+        buttons.forEach(function(button) {
+          if (button.id === buttonId) {
+            button.classList.add('active-btn'); // tambahkan kelas untuk warna latar belakang aktif
+          } else {
+            button.classList.remove('active-btn'); // hapus kelas jika bukan button yang diklik
+          }
+        });
+      }
+
+      // terapkan fungsi pada event click button
+      document.getElementById('btn-face-recognition').addEventListener('click', function () {
+        setActiveButton('btn-face-recognition');
+        var carousel = new bootstrap.Carousel(document.getElementById('login-slider'));
+        carousel.to(0); // Go to the first slide (Face Recognition)
+      });
+
+      document.getElementById('btn-form-login').addEventListener('click', function () {
+        setActiveButton('btn-form-login');
+        var carousel = new bootstrap.Carousel(document.getElementById('login-slider'));
+        carousel.to(1); // Go to the second slide (Form Login)
+      });
     </script>
   </body>
 </html>

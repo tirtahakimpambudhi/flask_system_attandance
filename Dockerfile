@@ -10,10 +10,10 @@ WORKDIR /app
 COPY . .
 RUN make linux_venv
 
-
+RUN pip install --upgrade pip
 COPY requirements.txt .
 RUN make install
-RUN pip install --upgrade pip
+
 
 FROM python:3.9-slim-bullseye AS compile
 FROM build

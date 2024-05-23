@@ -1,10 +1,15 @@
 FROM python:3.10.12-slim-bullseye AS build
+
 # Make sure we use the virtualenv:
-ENV PATH="/app/venv/bin:$PATH" APP_ENV="development" SUPABASE_URL="" SUPABASE_API_KEY="" SUPABASE_TABLE=""
+ENV PATH="/app/venv/bin:$PATH" \
+    APP_ENV="development" \
+    SUPABASE_URL="" \
+    SUPABASE_API_KEY="" \
+    SUPABASE_TABLE="" \
+    UPLOAD_PATH="./static/upload"
 
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends build-essential gcc make cmake
-
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential gcc make cmake
 
 WORKDIR /app
 COPY . .
@@ -15,10 +20,15 @@ RUN pip install wheel
 COPY requirements.txt .
 RUN make install
 
-
 FROM python:3.10.12-slim-bullseye AS compile
 FROM build
-ENV PATH=${PATH} APP_ENV=${APP_ENV} SUPABASE_URL=${SUPABASE_URL} SUPABASE_API_KEY=${SUPABASE_API_KEY} SUPABASE_TABLE=${SUPABASE_TABLE}
+
+ENV PATH=${PATH} \
+    APP_ENV=${APP_ENV} \
+    SUPABASE_URL=${SUPABASE_URL} \
+    SUPABASE_API_KEY=${SUPABASE_API_KEY} \
+    SUPABASE_TABLE=${SUPABASE_TABLE} \
+    UPLOAD_PATH=${UPLOAD_PATH}
 
 WORKDIR /app
 COPY --from=build /app/venv /app/venv
@@ -26,8 +36,3 @@ COPY --from=build /app/venv /app/venv
 COPY . .
 
 CMD ["python3","/app/app.py"]
-
-
-
-
-

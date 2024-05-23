@@ -16,3 +16,21 @@ class RegisterForm(FlaskForm):
     )
     year_graduated = IntegerField(label='Year Graduated', validators=[InputRequired(), NumberRange(min=1900, max=2100)])
     photo = FileField(label='Photo', validators=[InputRequired()])
+
+
+class LoginForm(FlaskForm):
+    nis = IntegerField(label='NIS', validators=[InputRequired(), NumberRange(min=1, max=99999)])
+    status = SelectField(
+        label='Status Kehadiran',
+        choices=[('attend', 'Hadir'), ('absent', 'Tidak Hadir')],
+        default='attend',
+        validators=[InputRequired()]
+    )
+
+class EditAbsenceForm(FlaskForm):
+        status = SelectField(
+        label='Status Kehadiran',
+        choices=[('attend', 'Hadir'), ('absent', 'Tidak Hadir')],
+        default='attend',
+        validators=[InputRequired()]
+    )

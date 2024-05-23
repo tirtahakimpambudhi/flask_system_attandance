@@ -4,3 +4,4 @@ venv/*
 .idea/
 log/*
 static/upload/*
+.vercel

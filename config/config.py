@@ -12,6 +12,7 @@ class Config:
             "env" : os.environ.get("APP_ENV")
         }
         UPLOAD_PATH :str = os.environ.get("UPLOAD_PATH")
+        LOG_PATH :str = os.environ.get("LOG_PATH")
         CALL_API_TIMEOUT :int = os.environ.get("TIME_OUT_CALL_API")
         CALL_API_TIME_INTERVAL :int = os.environ.get("TIME_INTERVAL_CALL_API")
         DATABASE :dict = {

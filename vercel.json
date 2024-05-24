@@ -3,12 +3,7 @@
     "builds": [
       {
         "src": "app.py",
-        "use": "@vercel/python",
-        "config": {
-          "includeFiles": [
-            "requirements.txt"
-          ]
-        }
+        "use": "@vercel/python"
       }
     ],
     "routes": [
@@ -26,11 +21,7 @@
       }
     ],
     "build": {
-      "env": {
-        "PIP_NO_CACHE_DIR": "off",
-        "PIP_DISABLE_PIP_VERSION_CHECK": "on"
-      },
-      "command": "apt-get update && apt-get install -y cmake && pip3.12 install --disable-pip-version-check --target . --upgrade -r /vercel/path0/requirements.txt"
+      "command": "./build.sh"
     }
   }
   

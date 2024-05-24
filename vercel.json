@@ -20,8 +20,6 @@
         "dest": "/app.py"
       }
     ],
-    "build": {
-      "command": "./build.sh"
-    }
+    "buildCommand": "./build.sh"
   }
   

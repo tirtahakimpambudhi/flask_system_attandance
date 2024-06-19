@@ -30,6 +30,8 @@ jobs:
                     echo "TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }}" >> $GITHUB_ENV
                     echo "UPLOAD_PATH=${{ secrets.UPLOAD_PATH }}" >> $GITHUB_ENV
                     echo "LOG_PATH=${{ secrets.LOG_PATH }}" >> $GITHUB_ENV
+            - name: 'Check Version'
+              run: python3 --version
 
 
             

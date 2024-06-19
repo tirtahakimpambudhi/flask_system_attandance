@@ -30,7 +30,7 @@ gen_test:
 	cp .env test/.env
 
 test:
-	python3 -m unittest discover
+	python3 -m unittest discover ./test
 
 
 run:

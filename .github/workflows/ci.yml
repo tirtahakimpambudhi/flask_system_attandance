@@ -32,6 +32,8 @@ jobs:
                     echo "LOG_PATH=${{ secrets.LOG_PATH }}" >> $GITHUB_ENV
             - name: 'Check Version'
               run: python3 --version
+            - name: 'Setup Dependencies'
+              run: apt install make && echo 'Successfully'
 
 
             

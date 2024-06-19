@@ -33,7 +33,7 @@ jobs:
             - name: 'Check Version'
               run: python3 --version
             - name: 'Setup Dependencies'
-              run: sudo apt install make && echo 'Successfully'
+              run: sudo apt install make && make install
 
 
             

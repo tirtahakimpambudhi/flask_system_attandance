@@ -34,6 +34,8 @@ jobs:
               run: python3 --version
             - name: 'Setup Dependencies'
               run: sudo apt install make && make linux_venv && make install
+            - name: 'Unittest'
+              run: make test
 
 
             

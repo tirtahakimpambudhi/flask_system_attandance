@@ -3,11 +3,11 @@ version: "3.9"
 services:
   attadance_app:
     container_name: attadance_app
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: tirtahakimpambudhi/flask_system_attandance
     env_file:
       - .env
     restart: always
     ports:
       - "5000:5000"
+    
+      

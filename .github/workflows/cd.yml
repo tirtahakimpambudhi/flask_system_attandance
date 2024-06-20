@@ -94,6 +94,12 @@ jobs:
           docker build . --tag ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
           docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
+      - name: Build and Push Docker Image Alpine
+        timeout-minutes: 30
+        run: |
+          docker build -f Dockerfile.alpine -t ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
+          docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
+          
   pull-image:
     name: Pull Image on VPS
     runs-on: ubuntu-latest
@@ -115,8 +121,17 @@ jobs:
                 docker container stop ${{ secrets.APP_NAME }} &&
                 sleep 5s &&
                 docker container rm ${{ secrets.APP_NAME }}
+                else
+                echo "No container with the name ${{ secrets.APP_NAME }} exists."
                 fi
-                docker image rm ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
+          
+                # Check if the image exists and remove it
+                if [ "$(docker images -q ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine)" ]; then
+                    echo "Removing the image: ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine"
+                    docker image rm ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
+                else
+                    echo "No image with the name ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine exists."
+                fi
 
       - name: Pull Image in VPS
         timeout-minutes: 30
@@ -130,7 +145,7 @@ jobs:
             # Login ke GitHub Container Registry
             echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u ${{ secrets.USERNAME_GITHUB }} --password-stdin &&
             # Pull image terbaru dari GitHub Container Registry
-            docker pull ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
+            docker pull ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
 
   run-container:
     name: Run Container on VPS

@@ -1,0 +1,66 @@
+# Menggunakan base image alpine linux yang ringan
+FROM alpine:3.18 AS build
+
+# Menambahkan informasi tentang image
+LABEL org.opencontainers.image.source="https://github.com/tirtahakimpambudhi/flask_system_attandance"
+LABEL org.opencontainers.image.description="Flask System Attandance Image"
+LABEL org.opencontainers.image.licenses=MIT
+
+# Menambahkan variabel lingkungan
+ENV PATH="/app/venv/bin:$PATH" \
+    APP_ENV="" \
+    APP_PORT=5000 \
+    APP_HOST="" \
+    APP_DEBUG=false \
+    SECRET_KEY="" \
+    SUPABASE_API_KEY="" \
+    SUPABASE_URL="" \
+    SUPABASE_TABLE="" \
+    SUPABASE_CONNECTION_STRING="" \
+    TIME_OUT_CALL_API=30000 \
+    TIME_INTERVAL_CALL_API=1000 \
+    UPLOAD_PATH="" \
+    LOG_PATH=""
+
+# Mengupdate repositori dan menginstall python3, pip, dan alat pembangunan
+RUN apk update && \
+    apk add --no-cache python3 py3-pip build-base gcc cmake make
+
+# Menyiapkan direktori kerja
+WORKDIR /app
+
+# Menyalin semua file dari direktori lokal ke direktori kerja di dalam container
+COPY . .
+
+# Membuat virtual environment dan mengaktifkannya
+RUN python3 -m venv /app/venv
+
+# Mengupdate pip dan menginstall wheel
+RUN pip install --upgrade pip wheel
+
+# Menyalin file requirements dan menginstall dependensi
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Menentukan perintah yang dijalankan ketika container dimulai
+CMD ["python3", "/app/app.py"]
+
+# Untuk Dockerfile yang lebih efisien dan menghilangkan stage build (multistage), uncomment bagian berikut dan sesuaikan jika diperlukan
+# FROM alpine:3.18
+# 
+# ENV PATH=${PATH} \
+#     APP_ENV=${APP_ENV} \
+#     SECRET_KEY=${SECRET_KEY} \
+#     SUPABASE_API_KEY=${SUPABASE_API_KEY} \
+#     SUPABASE_URL=${SUPABASE_URL} \
+#     SUPABASE_TABLE=${SUPABASE_TABLE} \
+#     SUPABASE_CONNECTION_STRING=${SUPABASE_CONNECTION_STRING} \
+#     TIME_OUT_CALL_API=${TIME_OUT_CALL_API} \
+#     TIME_INTERVAL_CALL_API=${TIME_INTERVAL_CALL_API} \
+#     UPLOAD_PATH=${UPLOAD_PATH}
+# 
+# WORKDIR /app
+# COPY --from=build /app/venv /app/venv
+# COPY . .
+# 
+# CMD ["python3", "/app/app.py"]

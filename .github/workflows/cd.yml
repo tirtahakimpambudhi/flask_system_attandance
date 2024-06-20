@@ -100,6 +100,7 @@ jobs:
 
     steps:
       - name: Pull Image in VPS
+        timeout-minutes: 30
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -116,8 +117,8 @@ jobs:
     name: Run Container on VPS
     runs-on: ubuntu-latest
     needs: pull-image # Job ini bergantung pada pull-image
-
     steps:
+
       - name: Run Container In VPS
         uses: appleboy/ssh-action@v1.0.3
         with:

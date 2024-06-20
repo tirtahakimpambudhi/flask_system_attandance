@@ -5,13 +5,16 @@ LABEL org.opencontainers.image.licenses=MIT
 # Make sure we use the virtualenv:
 ENV PATH="/app/venv/bin:$PATH" \
     APP_ENV="" \
+    APP_PORT=5000 \
+    APP_HOST="" \
+    APP_DEBUG=false \
     SECRET_KEY="" \
     SUPABASE_API_KEY="" \
     SUPABASE_URL="" \
     SUPABASE_TABLE="" \
     SUPABASE_CONNECTION_STRING="" \
-    TIME_OUT_CALL_API="" \
-    TIME_INTERVAL_CALL_API="" \
+    TIME_OUT_CALL_API=30000 \
+    TIME_INTERVAL_CALL_API=1000 \
     UPLOAD_PATH="" \
     LOG_PATH=""
 

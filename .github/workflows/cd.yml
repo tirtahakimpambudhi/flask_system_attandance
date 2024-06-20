@@ -83,26 +83,6 @@ jobs:
             exit 1
           fi
 
-          if [ -z "${{ secrets.HOST }}" ]; then
-            echo "Error: Secret HOST is not set or is empty."
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.USERNAME }}" ]; then
-            echo "Error: Secret USERNAME is not set or is empty."
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.KEY }}" ]; then
-            echo "Error: Secret KEY is not set or is empty."
-            exit 1
-          fi
-
-          if [ -z "${{ secrets.PORT }}" ]; then
-            echo "Error: Secret PORT is not set or is empty."
-            exit 1
-          fi
-
           if [ -z "${{ secrets.TOKEN_GITHUB }}" ]; then
             echo "Error: Secret TOKEN_GITHUB is not set or is empty."
             exit 1
@@ -112,41 +92,38 @@ jobs:
 
       - name: Build Inventory Image
         run: |
-          docker build . --tag ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
-          docker push ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+          docker build . --tag ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
+          docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
       - name: Pull Image in VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
-            # Create necessary directories if they don't exist
-            mkdir -p app/uploads &&
-            mkdir -p app/logs &&
             # Login GHCR Registry
-            echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u tirtahakimpambudhi --password-stdin &&
+            echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u ${{ secrets.USERNAME_GITHUB }} --password-stdin &&
             # Pull the latest image from Docker Hub
-            docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+            docker pull ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
       - name: Run Container In VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
           script: |
-            mkdir -p app/logs app/uploads &&
-            if [ "$(docker ps -a -q -f name=flask_system_attendance)" ]; then
-              docker container stop flask_system_attendance &&
-              docker container rm flask_system_attendance
+            mkdir -p ${{ secrets.APP_LOG_PATH }} ${{ secrets.APP_UPLOAD_PATH }} &&
+            if [ "$(docker ps -a -q -f name=${{ secrets.APP_NAME }})" ]; then
+              docker container stop ${{ secrets.APP_NAME }} &&
+              docker container rm ${{ secrets.APP_NAME }}
             fi
 
             docker create \
-            --name flask_system_attandance \
+            --name ${{ secrets.APP_NAME }} \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e SUPABASE_API_KEY="${{ secrets.SUPABASE_API_KEY }}" \
@@ -157,16 +134,16 @@ jobs:
             -e TIME_INTERVAL_CALL_API="${{ secrets.TIME_INTERVAL_CALL_API }}" \
             -e UPLOAD_PATH="${{ secrets.UPLOAD_PATH }}" \
             -e LOG_PATH="${{ secrets.LOG_PATH }}" \
-            -v $(pwd)/app/uploads:/app/static/upload \
-            -v $(pwd)/app/logs:/app/log \
-            -p 5000:5000 \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_UPLOAD_PATH }}:/${{ secrets.APP_UPLOAD_PATH }} \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }} \
+            -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }} \
             --cpus "0.5" \
-            ghcr.io/***hakimpambudhi/flask_system_attandance:latest
+            ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
 
             # Tunggu sebentar untuk memastikan container dimulai
 
-            docker container start flask_system_attandance
+            docker container start ${{ secrets.APP_NAME }}
             sleep 10s
             # Menghapus Image Tidak Di Gunakan
             docker image prune -f 

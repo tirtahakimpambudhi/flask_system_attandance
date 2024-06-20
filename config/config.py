@@ -9,7 +9,10 @@ class Config:
         SECRET_KEY :str = os.environ.get("SECRET_KEY")
         SQLALCHEMY_DATABASE_URI :str = os.environ.get("SUPABASE_CONNECTION_STRING")
         APP :dict = {
-            "env" : os.environ.get("APP_ENV")
+            "env" : os.environ.get("APP_ENV"),
+            "port": os.environ.get("APP_PORT"),
+            "host": os.environ.get("APP_HOST"),
+            "debug" : os.environ.get("APP_DEBUG")
         }
         UPLOAD_PATH :str = os.environ.get("UPLOAD_PATH")
         LOG_PATH :str = os.environ.get("LOG_PATH")

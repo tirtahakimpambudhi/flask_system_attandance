@@ -44,7 +44,8 @@ jobs:
                         # Create necessary directories if they don't exist
                         mkdir -p app/uploads &&
                         mkdir -p app/logs &&
-
+                        # Login GHCR Registry
+                        echo '${{secrets.TOKEN_GITHUB}}' | docker login ghcr.io -u tirtahakimpambudhi --password-stdin
                         # Pull the latest image from Docker Hub
                         docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
               

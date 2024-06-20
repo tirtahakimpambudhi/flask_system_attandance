@@ -24,7 +24,17 @@ ENV PATH="/app/venv/bin:$PATH" \
 
 # Mengupdate repositori dan menginstall python3, pip, dan alat pembangunan
 RUN apk update && \
-    apk add --no-cache python3 py3-pip build-base gcc cmake make
+    apk add --no-cache \
+        python3 \
+        py3-pip \
+        build-base \
+        cmake \
+        make \
+        libjpeg-turbo-dev \
+        libx11-dev \
+        libx11 \
+        libffi-dev \
+        linux-headers
 
 # Menyiapkan direktori kerja
 WORKDIR /app

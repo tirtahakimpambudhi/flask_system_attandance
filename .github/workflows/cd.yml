@@ -21,19 +21,18 @@ jobs:
             uses: docker/setup-qemu-action@v3
           - name: Set up Docker Buildx
             uses: docker/setup-buildx-action@v3
-          - name: Login to Docker Hub
+          - name: 'Login to GitHub Container Registry'
             uses: docker/login-action@v3
             with:
-                registry: docker.io
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
-          - name: Build and push
-            uses: docker/build-push-action@v6
-            with:
-                context: .
-                file: ./Dockerfile
-                push: true
-                tags: ${{ secrets.DOCKERHUB_USERNAME }}/flask_system_attandance:latest
+              registry: ghcr.io
+              username: ${{github.actor}}
+              password: ${{secrets.TOKEN_GITHUB}}
+
+          - name: 'Build Inventory Image'
+            run: |
+              docker build . --tag ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+              docker push ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+            # if error build docker buildx build --progress=plain -t ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest .
           - name: executing remote ssh commands using ssh key to running container
             uses: appleboy/ssh-action@v1.0.3
             with:
@@ -47,7 +46,7 @@ jobs:
                         mkdir -p /app/logs &&
 
                         # Pull the latest image from Docker Hub
-                        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask_system_attandance:latest
+                        docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
               
                         # Check if the container is running, stop and remove it if it exists
                         if [ "$(docker ps -a -q -f name=flask_system_attandance)" ]; then
@@ -72,8 +71,8 @@ jobs:
                           -p 5000:5000 \
                           -v /app/uploads:${{ secrets.UPLOAD_PATH }} \
                           -v /app/logs:${{ secrets.LOG_PATH }} \
-                          ${{ secrets.DOCKERHUB_USERNAME }}/flask_system_attandance:latest
+                          ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
               
                         # Remove unused images
-                        && gdocker image prune -f
+                        && docker image prune -f
         

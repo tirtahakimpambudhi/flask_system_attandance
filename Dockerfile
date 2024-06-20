@@ -1,5 +1,5 @@
 FROM python:3.10.12-slim-bullseye AS build
-
+LABEL org.opencontainers.image.source="https://github.com/tirtahakimpambudhi/flask_system_attandance"
 # Make sure we use the virtualenv:
 ENV PATH="/app/venv/bin:$PATH" \
     APP_ENV="" \

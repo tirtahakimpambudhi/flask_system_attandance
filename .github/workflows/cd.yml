@@ -15,23 +15,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Validate Secrets
-        run: |
-          echo "Validating secrets..."
-          
-          # Check if secrets are set and not empty
-          if [ -z "${{ secrets.APP_ENV }}" ]; then echo "APP_ENV is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.SECRET_KEY }}" ]; then echo "SECRET_KEY is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.SUPABASE_API_KEY }}" ]; then echo "SUPABASE_API_KEY is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then echo "SUPABASE_URL is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.SUPABASE_TABLE }}" ]; then echo "SUPABASE_TABLE is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.SUPABASE_CONNECTION_STRING }}" ]; then echo "SUPABASE_CONNECTION_STRING is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.TIME_OUT_CALL_API }}" ]; then echo "TIME_OUT_CALL_API is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.TIME_INTERVAL_CALL_API }}" ]; then echo "TIME_INTERVAL_CALL_API is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.UPLOAD_PATH }}" ]; then echo "UPLOAD_PATH is not set or is empty"; exit 1; fi
-          if [ -z "${{ secrets.LOG_PATH }}" ]; then echo "LOG_PATH is not set or is empty"; exit 1; fi
 
-          echo "All secrets are set and not empty."
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
@@ -45,10 +29,107 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN_GITHUB }}
 
+      - name: Validate Secrets
+        run: |
+          echo "Validating secrets..."
+
+          if [ -z "${{ secrets.APP_ENV }}" ]; then
+            echo "Error: Secret APP_ENV is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.SECRET_KEY }}" ]; then
+            echo "Error: Secret SECRET_KEY is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.SUPABASE_API_KEY }}" ]; then
+            echo "Error: Secret SUPABASE_API_KEY is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.SUPABASE_URL }}" ]; then
+            echo "Error: Secret SUPABASE_URL is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.SUPABASE_TABLE }}" ]; then
+            echo "Error: Secret SUPABASE_TABLE is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.SUPABASE_CONNECTION_STRING }}" ]; then
+            echo "Error: Secret SUPABASE_CONNECTION_STRING is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.TIME_OUT_CALL_API }}" ]; then
+            echo "Error: Secret TIME_OUT_CALL_API is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.TIME_INTERVAL_CALL_API }}" ]; then
+            echo "Error: Secret TIME_INTERVAL_CALL_API is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.UPLOAD_PATH }}" ]; then
+            echo "Error: Secret UPLOAD_PATH is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.LOG_PATH }}" ]; then
+            echo "Error: Secret LOG_PATH is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.HOST }}" ]; then
+            echo "Error: Secret HOST is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.USERNAME }}" ]; then
+            echo "Error: Secret USERNAME is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.KEY }}" ]; then
+            echo "Error: Secret KEY is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.PORT }}" ]; then
+            echo "Error: Secret PORT is not set or is empty."
+            exit 1
+          fi
+
+          if [ -z "${{ secrets.TOKEN_GITHUB }}" ]; then
+            echo "Error: Secret TOKEN_GITHUB is not set or is empty."
+            exit 1
+          fi
+
+          echo "All secrets are set and not empty."
+
       - name: Build Inventory Image
         run: |
-          docker build . --tag ghcr.io/tirtahakimpambudhi/flask_system_attendance:latest
-          docker push ghcr.io/tirtahakimpambudhi/flask_system_attendance:latest
+          docker build . --tag ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+          docker push ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
+
+      - name: Pull Image in VPS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # Create necessary directories if they don't exist
+            mkdir -p app/uploads &&
+            mkdir -p app/logs &&
+            # Login GHCR Registry
+            echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u tirtahakimpambudhi --password-stdin &&
+            # Pull the latest image from Docker Hub
+            docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
 
       - name: Run Container In VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -59,12 +140,13 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             mkdir -p app/logs app/uploads &&
-            if [ "$(docker ps -a -q -f name=flask_system_attendance)" ]; then
-              docker container stop flask_system_attendance &&
-              docker container rm flask_system_attendance
-            fi
+            if [ "$(docker ps -a -q -f name=flask_system_attandance)" ]; then
+              docker container stop flask_system_attandance &&
+              docker container rm flask_system_attandance
+            fi &&
 
-            docker run -d --name flask_system_attendance -e APP_ENV=${{ secrets.APP_ENV }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }} -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} -e SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }} -e SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }} -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} -e UPLOAD_PATH=${{ secrets.UPLOAD_PATH }} -e LOG_PATH=${{ secrets.LOG_PATH }} -p 5000:5000 -v app/uploads:${{ secrets.UPLOAD_PATH }} -v app/logs:${{ secrets.LOG_PATH }} --cpus "0.5" ghcr.io/tirtahakimpambudhi/flask_system_attendance:latest 
+            docker run -d --name flask_system_attandance -e APP_ENV=${{ secrets.APP_ENV }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }} -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} -e SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }} -e SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }} -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} -e UPLOAD_PATH=${{ secrets.UPLOAD_PATH }} -e LOG_PATH=${{ secrets.LOG_PATH }} -p 5000:5000 -v app/uploads:${{ secrets.UPLOAD_PATH }} -v app/logs:${{ secrets.LOG_PATH }} --cpus "0.5" ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
+
             # Tunggu sebentar untuk memastikan container dimulai
             sleep 10s
 

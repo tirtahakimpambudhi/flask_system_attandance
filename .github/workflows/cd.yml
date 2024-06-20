@@ -47,7 +47,7 @@ jobs:
                         # Login GHCR Registry
                         echo '${{secrets.TOKEN_GITHUB}}' | docker login ghcr.io -u tirtahakimpambudhi --password-stdin
                         # Pull the latest image from Docker Hub
-                        docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
+                        && docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
               
                         # Check if the container is running, stop and remove it if it exists
                         if [ "$(docker ps -a -q -f name=flask_system_attandance)" ]; then

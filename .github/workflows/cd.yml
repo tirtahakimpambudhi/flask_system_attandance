@@ -89,6 +89,7 @@ jobs:
           echo "All secrets are set and not empty."
 
       - name: Build and Push Docker Image
+        timeout-minutes: 30
         run: |
           docker build . --tag ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
           docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest

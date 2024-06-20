@@ -151,9 +151,9 @@ jobs:
               docker container stop ${{ secrets.APP_NAME }} &&
               sleep 5s &&
               docker container rm ${{ secrets.APP_NAME }}
-            fi
+            fi &&
 
-            # Create container baru
+            echo "Create container baru" &&
             docker create \
             --name ${{ secrets.APP_NAME }} \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
@@ -175,7 +175,8 @@ jobs:
             --cpus "0.5" \
             ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
             # TODO ENV RESOURCE LIMIT
-            # Start container
+            sleep 10s
+            echo "Start container" &&
             docker container start ${{ secrets.APP_NAME }}
 
             # Menunggu beberapa detik untuk memastikan kontainer berjalan

@@ -6,12 +6,10 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Deploy to VPS
-    defaults:
-      run:
-        shell: bash
+  build-image:
+    name: Build Image and Validate Secrets
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -90,11 +88,17 @@ jobs:
 
           echo "All secrets are set and not empty."
 
-      - name: Build Inventory Image
+      - name: Build and Push Docker Image
         run: |
           docker build . --tag ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
           docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
+  pull-image:
+    name: Pull Image on VPS
+    runs-on: ubuntu-latest
+    needs: build-image # Job ini bergantung pada build-image
+
+    steps:
       - name: Pull Image in VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -103,11 +107,17 @@ jobs:
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            # Login GHCR Registry
+            # Login ke GitHub Container Registry
             echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u ${{ secrets.USERNAME_GITHUB }} --password-stdin &&
-            # Pull the latest image from Docker Hub
+            # Pull image terbaru dari GitHub Container Registry
             docker pull ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
+  run-container:
+    name: Run Container on VPS
+    runs-on: ubuntu-latest
+    needs: pull-image # Job ini bergantung pada pull-image
+
+    steps:
       - name: Run Container In VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -116,37 +126,40 @@ jobs:
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
+            # Buat direktori untuk logs dan uploads
             mkdir -p ${{ secrets.APP_LOG_PATH }} ${{ secrets.APP_UPLOAD_PATH }} &&
+            
+            # Jika container dengan nama yang sama sudah ada, stop dan remove
             if [ "$(docker ps -a -q -f name=${{ secrets.APP_NAME }})" ]; then
               docker container stop ${{ secrets.APP_NAME }} &&
+              sleep 5s &&
               docker container rm ${{ secrets.APP_NAME }}
             fi
 
+            # Create container baru
             docker create \
             --name ${{ secrets.APP_NAME }} \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
-            -e APP_PORT=${{ secrets.APP_PORT }} \
-            -e APP_HOST="${{ secrets.APP_HOST }}" \
-            -e APP_DEBUG=${{ secrets.APP_DEBUG }} \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e SUPABASE_API_KEY="${{ secrets.SUPABASE_API_KEY }}" \
             -e SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
             -e SUPABASE_TABLE="${{ secrets.SUPABASE_TABLE }}" \
             -e SUPABASE_CONNECTION_STRING="${{ secrets.SUPABASE_CONNECTION_STRING }}" \
-            -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} \
-            -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} \
+            -e TIME_OUT_CALL_API="${{ secrets.TIME_OUT_CALL_API }}" \
+            -e TIME_INTERVAL_CALL_API="${{ secrets.TIME_INTERVAL_CALL_API }}" \
             -e UPLOAD_PATH="${{ secrets.UPLOAD_PATH }}" \
             -e LOG_PATH="${{ secrets.LOG_PATH }}" \
-            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_UPLOAD_PATH }}:/${{ secrets.APP_UPLOAD_PATH }} \
-            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }} \
-            -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }} \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_UPLOAD_PATH }}:/${{ secrets.APP_UPLOAD_PATH }}" \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }}" \
+            -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }}" \
             --cpus "0.5" \
             ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 
-
-            # Tunggu sebentar untuk memastikan container dimulai
-
+            # Start container
             docker container start ${{ secrets.APP_NAME }}
+
+            # Menunggu beberapa detik untuk memastikan kontainer berjalan
             sleep 10s
-            # Menghapus Image Tidak Di Gunakan
-            docker image prune -f 
+
+            # Menghapus image Docker yang tidak digunakan
+            docker image prune -f

@@ -33,7 +33,7 @@ jobs:
               docker build . --tag ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
               docker push ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
             # if error build docker buildx build --progress=plain -t ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest .
-          - name: executing remote ssh commands using ssh key to running container
+          - name: Pull Image in VPS
             uses: appleboy/ssh-action@v1.0.3
             with:
                 host: ${{ secrets.HOST }}
@@ -46,34 +46,5 @@ jobs:
                         mkdir -p app/logs &&
                         # Login GHCR Registry
                         echo '${{secrets.TOKEN_GITHUB}}' | docker login ghcr.io -u tirtahakimpambudhi --password-stdin
-                        # Pull the latest image from Docker Hub
-                        && docker pull ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest &&
-              
-                        # Check if the container is running, stop and remove it if it exists
-                        if [ "$(docker ps -a -q -f name=flask_system_attandance)" ]; then
-                            docker container stop flask_system_attandance &&
-                            docker container rm flask_system_attandance
-                        fi
+          
 
-              
-                        # Run the new container
-                        && docker run -d \
-                          --name flask_system_attandance \
-                          -e APP_ENV=${{ secrets.APP_ENV }} \
-                          -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-                          -e SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }} \
-                          -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-                          -e SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }} \
-                          -e SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }} \
-                          -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} \
-                          -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} \
-                          -e UPLOAD_PATH=${{ secrets.UPLOAD_PATH }} \
-                          -e LOG_PATH=${{ secrets.LOG_PATH }} \
-                          -p 5000:5000 \
-                          -v app/uploads:${{ secrets.UPLOAD_PATH }} \
-                          -v app/logs:${{ secrets.LOG_PATH }} \
-                          ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest
-              
-                        # Remove unused images
-                        && docker image prune -f
-        

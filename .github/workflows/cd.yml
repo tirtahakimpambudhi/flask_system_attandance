@@ -145,7 +145,7 @@ jobs:
               docker container rm flask_system_attendance
             fi
 
-            docker run -d \
+            docker create \
             --name flask_system_attandance \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
@@ -166,5 +166,4 @@ jobs:
             # Tunggu sebentar untuk memastikan container dimulai
             sleep 10s
 
-            # Hapus gambar yang tidak terpakai
-            docker image prune -f
+            docker container start flask_system_attandance

@@ -154,7 +154,7 @@ jobs:
             fi &&
 
             echo "Create container baru" &&
-            docker create \
+            docker container run -d \
             --name ${{ secrets.APP_NAME }} \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
             -e APP_PORT=${{ secrets.APP_PORT }} \
@@ -175,12 +175,5 @@ jobs:
             --cpus "0.5" \
             ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
             # TODO ENV RESOURCE LIMIT
-            sleep 10s
-            echo "Start container" &&
-            docker container start ${{ secrets.APP_NAME }}
-
             # Menunggu beberapa detik untuk memastikan kontainer berjalan
             sleep 10s
-
-            # Menghapus image Docker yang tidak digunakan
-            docker image prune -f

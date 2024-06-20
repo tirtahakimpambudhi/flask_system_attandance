@@ -128,10 +128,7 @@ jobs:
           key: ${{ secrets.VPS_PRIVATE_KEY }}
           port: ${{ secrets.VPS_PORT }}
           script: |
-            # Buat direktori untuk logs dan uploads
             mkdir -p ${{ secrets.APP_LOG_PATH }} ${{ secrets.APP_UPLOAD_PATH }} &&
-            
-            # Jika container dengan nama yang sama sudah ada, stop dan remove
             if [ "$(docker ps -a -q -f name=${{ secrets.APP_NAME }})" ]; then
               docker container stop ${{ secrets.APP_NAME }} &&
               sleep 5s &&
@@ -142,21 +139,24 @@ jobs:
             docker create \
             --name ${{ secrets.APP_NAME }} \
             -e APP_ENV="${{ secrets.APP_ENV }}" \
+            -e APP_PORT=${{ secrets.APP_PORT }} \
+            -e APP_HOST="${{ secrets.APP_HOST }}" \
+            -e APP_DEBUG=${{ secrets.APP_DEBUG }} \
             -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
             -e SUPABASE_API_KEY="${{ secrets.SUPABASE_API_KEY }}" \
             -e SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
             -e SUPABASE_TABLE="${{ secrets.SUPABASE_TABLE }}" \
             -e SUPABASE_CONNECTION_STRING="${{ secrets.SUPABASE_CONNECTION_STRING }}" \
-            -e TIME_OUT_CALL_API="${{ secrets.TIME_OUT_CALL_API }}" \
-            -e TIME_INTERVAL_CALL_API="${{ secrets.TIME_INTERVAL_CALL_API }}" \
+            -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} \
+            -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} \
             -e UPLOAD_PATH="${{ secrets.UPLOAD_PATH }}" \
             -e LOG_PATH="${{ secrets.LOG_PATH }}" \
-            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_UPLOAD_PATH }}:/${{ secrets.APP_UPLOAD_PATH }}" \
-            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }}" \
-            -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }}" \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_UPLOAD_PATH }}:/${{ secrets.APP_UPLOAD_PATH }} \
+            -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }} \
+            -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }} \
             --cpus "0.5" \
             ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
-
+    
             # Start container
             docker container start ${{ secrets.APP_NAME }}
 

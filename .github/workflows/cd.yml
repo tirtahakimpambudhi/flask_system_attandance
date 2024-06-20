@@ -42,29 +42,13 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            mkdir -p app/logs app/uploads &&
             if [ "$(docker ps -a -q -f name=flask_system_attendance)" ]; then
               docker container stop flask_system_attendance &&
               docker container rm flask_system_attendance
             fi
 
-            docker container run -d \
-              --name flask_system_attendance \
-              -e APP_ENV=${{ secrets.APP_ENV }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -e SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }} \
-              -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
-              -e SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }} \
-              -e SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }} \
-              -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} \
-              -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} \
-              -e UPLOAD_PATH=${{ secrets.UPLOAD_PATH }} \
-              -e LOG_PATH=${{ secrets.LOG_PATH }} \
-              -p 5000:5000 \
-              -v app/uploads:${{ secrets.UPLOAD_PATH }} \
-              -v app/logs:${{ secrets.LOG_PATH }} \
-              --cpus 0.5 \
-              ghcr.io/tirtahakimpambudhi/flask_system_attendance:latest
-
+            docker run -d --name flask_system_attendance -e APP_ENV=${{ secrets.APP_ENV }} -e SECRET_KEY=${{ secrets.SECRET_KEY }} -e SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }} -e SUPABASE_URL=${{ secrets.SUPABASE_URL }} -e SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }} -e SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }} -e TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }} -e TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }} -e UPLOAD_PATH=${{ secrets.UPLOAD_PATH }} -e LOG_PATH=${{ secrets.LOG_PATH }} -p 5000:5000 -v app/uploads:${{ secrets.UPLOAD_PATH }} -v app/logs:${{ secrets.LOG_PATH }} -c 0.5 ghcr.io/tirtahakimpambudhi/flask_system_attendance:latest &&
             # Tunggu sebentar untuk memastikan container dimulai
             sleep 10s
 

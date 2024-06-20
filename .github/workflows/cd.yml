@@ -18,13 +18,14 @@ jobs:
       
       - name: Check Secrets
         run: |
-          echo "APP_ENV=${{ secrets.APP_ENV }}"\
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}"\
-          echo "SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }}"\
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}"\
-          echo "SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }}"\
-          echo "SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }}"\
-          echo "TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }}"\
-          echo "TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }}"\
-          echo "UPLOAD_PATH=${{ secrets.UPLOAD_PATH }}"\
-          echo "LOG_PATH=${{ secrets.LOG_PATH }}"
+          echo "APP_ENV=${{ secrets.APP_ENV }}\n" >> test.txt\
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}\n" >> test.txt\
+          echo "SUPABASE_API_KEY=${{ secrets.SUPABASE_API_KEY }}\n" >> test.txt\
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}\n" >> test.txt\
+          echo "SUPABASE_TABLE=${{ secrets.SUPABASE_TABLE }}\n" >> test.txt\
+          echo "SUPABASE_CONNECTION_STRING=${{ secrets.SUPABASE_CONNECTION_STRING }}\n" >> test.txt\
+          echo "TIME_OUT_CALL_API=${{ secrets.TIME_OUT_CALL_API }}\n" >> test.txt\
+          echo "TIME_INTERVAL_CALL_API=${{ secrets.TIME_INTERVAL_CALL_API }}\n" >> test.txt\
+          echo "UPLOAD_PATH=${{ secrets.UPLOAD_PATH }}\n" >> test.txt\
+          echo "LOG_PATH=${{ secrets.LOG_PATH }}\n" >> test.txt &&
+          cat test.txt

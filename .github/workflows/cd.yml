@@ -100,6 +100,24 @@ jobs:
     needs: build-image # Job ini bergantung pada build-image
 
     steps:
+
+      - name: Remove Old Image in VPS
+        timeout-minutes: 30
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+                # Remove Image Lama
+                if [ "$(docker ps -a -q -f name=${{ secrets.APP_NAME }})" ]; then
+                docker container stop ${{ secrets.APP_NAME }} &&
+                sleep 5s &&
+                docker container rm ${{ secrets.APP_NAME }}
+                fi
+                docker image rm ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
+
       - name: Pull Image in VPS
         timeout-minutes: 30
         uses: appleboy/ssh-action@v1.0.3
@@ -111,13 +129,6 @@ jobs:
           script: |
             # Login ke GitHub Container Registry
             echo '${{ secrets.TOKEN_GITHUB }}' | docker login ghcr.io -u ${{ secrets.USERNAME_GITHUB }} --password-stdin &&
-            # Remove Image Lama
-            if [ "$(docker ps -a -q -f name=${{ secrets.APP_NAME }})" ]; then
-            docker container stop ${{ secrets.APP_NAME }} &&
-            sleep 5s &&
-            docker container rm ${{ secrets.APP_NAME }}
-            fi
-            docker image rm ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
             # Pull image terbaru dari GitHub Container Registry
             docker pull ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
 

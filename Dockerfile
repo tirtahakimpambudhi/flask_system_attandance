@@ -30,7 +30,7 @@ RUN pip install wheel
 COPY requirements.txt .
 RUN make install
 
-CMD ["make","run"]
+CMD ["python3","/app/app.py"]
 # FROM python:3.10.12-slim-bullseye AS compile
 # FROM build
 

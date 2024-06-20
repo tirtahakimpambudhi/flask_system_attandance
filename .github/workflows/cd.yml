@@ -158,8 +158,8 @@ jobs:
             -e UPLOAD_PATH="${{ secrets.UPLOAD_PATH }}" \
             -e LOG_PATH="${{ secrets.LOG_PATH }}" \
             -p 5000:5000 \
-            -v app/uploads:"${{ secrets.UPLOAD_PATH }}" \
-            -v app/logs:"${{ secrets.LOG_PATH }}" \
+            -v app/uploads:${{ secrets.UPLOAD_PATH }} \
+            -v app/logs:${{ secrets.LOG_PATH }} \
             --cpus "0.5" \
             ghcr.io/tirtahakimpambudhi/flask_system_attandance:latest 
 

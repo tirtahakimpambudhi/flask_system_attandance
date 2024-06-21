@@ -38,6 +38,21 @@ LABEL org.opencontainers.image.source="https://github.com/tirtahakimpambudhi/fla
 LABEL org.opencontainers.image.description="Flask System Attandance Image"
 LABEL org.opencontainers.image.licenses=MIT
 
+# Mengupdate repositori dan menginstall python3, pip, dan alat pembangunan
+RUN apk update && \
+    apk add --no-cache \
+        python3 \
+        py3-pip \
+        build-base \
+        cmake \
+        make \
+        libjpeg-turbo-dev \
+        libx11-dev \
+        libx11 \
+        libffi-dev \
+        linux-headers \
+        bash 
+
 FROM build
 ENV PATH=${PATH} \
     APP_ENV=${APP_ENV} \
@@ -54,24 +69,10 @@ ENV PATH=${PATH} \
     UPLOAD_PATH=${UPLOAD_PATH} \
     LOG_PATH=${LOG_PATH} 
 
-# Mengupdate repositori dan menginstall python3, pip, dan alat pembangunan
-RUN apk update && \
-    apk add --no-cache \
-        python3 \
-        py3-pip \
-        build-base \
-        cmake \
-        make \
-        libjpeg-turbo-dev \
-        libx11-dev \
-        libx11 \
-        libffi-dev \
-        linux-headers \
-        bash 
-
 # Menyiapkan direktori kerja
 WORKDIR /app
 
+# Menyalin file dari tahap build
 COPY --from=build /app .
 
 # Menentukan perintah yang dijalankan ketika container dimulai

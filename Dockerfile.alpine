@@ -24,11 +24,11 @@ RUN apt-get update && \
 WORKDIR /app
 COPY . .
 RUN make linux_venv
-RUN CFLAGS="-march=x86-64 -mtune=generic" pip install --no-binary :all: numpy
-RUN CFLAGS="-march=x86-64 -mtune=generic" pip install --upgrade pip
-RUN CFLAGS="-march=x86-64 -mtune=generic" pip install wheel
+
+RUN pip install --upgrade pip
+RUN pip install wheel
 COPY requirements.txt .
-RUN CFLAGS="-march=x86-64 -mtune=generic" python3 -m pip install -r requirements.txt
+RUN make install
 
 # Menggunakan base image alpine linux yang ringan
 FROM alpine:3.18 AS final

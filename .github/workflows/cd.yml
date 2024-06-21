@@ -188,7 +188,7 @@ jobs:
             -v ${{ secrets.VPS_WD}}/${{ secrets.APP_LOG_PATH }}:/${{ secrets.APP_LOG_PATH }} \
             -p ${{ secrets.APP_PUBLISH_PORT }}:${{ secrets.APP_PORT }} \
             --cpus "0.5" \
-            ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:latest
+            ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
             # TODO ENV RESOURCE LIMIT
             # Menunggu beberapa detik untuk memastikan kontainer berjalan
             sleep 10s

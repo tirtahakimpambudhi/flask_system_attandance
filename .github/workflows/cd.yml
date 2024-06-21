@@ -97,7 +97,8 @@ jobs:
       - name: Build and Push Docker Image Alpine
         timeout-minutes: 30
         run: |
-          docker buildx build --push -f Dockerfile.alpine -t ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine .
+          docker build -f Dockerfile.alpine --tag ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
+          docker push ghcr.io/${{ secrets.USERNAME_GITHUB }}/${{ secrets.APP_NAME }}:alpine
           
   pull-image:
     name: Pull Image on VPS

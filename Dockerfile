@@ -3,6 +3,8 @@ LABEL org.opencontainers.image.source="https://github.com/tirtahakimpambudhi/fla
 LABEL org.opencontainers.image.description="Flask System Attandance Image"
 LABEL org.opencontainers.image.licenses=MIT
 # Make sure we use the virtualenv:
+ENV CFLAGS="-mno-sse4.2"
+
 ENV PATH="/app/venv/bin:$PATH" \
     APP_ENV="" \
     APP_PORT=5000 \

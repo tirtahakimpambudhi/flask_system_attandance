@@ -40,9 +40,7 @@ LABEL org.opencontainers.image.licenses=MIT
 
 # Mengupdate repositori dan menginstall python3, pip, dan alat pembangunan
 RUN apk update && \
-    apk add --no-cache \
-        python3 \
-        py3-pip \
+    apk add --no-install-recommends \
         build-base \
         cmake \
         make \
@@ -51,7 +49,16 @@ RUN apk update && \
         libx11 \
         libffi-dev \
         linux-headers \
-        bash 
+        bash \
+        g++ \
+        python3-dev \
+        py3-pip
+
+# Set CFLAGS untuk menghindari SSE 4.2 pada semua instalasi pip
+ENV CFLAGS="-march=x86-64 -mtune=generic"
+
+# Menginstall numpy tanpa binary dan memastikan semua pustaka lain mengikuti CFLAGS
+RUN CFLAGS="-march=x86-64 -mtune=generic" pip install --no-binary :all: numpy
 
 FROM build
 ENV PATH=${PATH} \

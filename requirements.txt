@@ -8,5 +8,5 @@ supabase==2.4.6
 numpy==1.26.4
 Pillow==10.3.0
 python-dotenv==1.0.1
-Werkzeug==3.0.3
+Werkzeug==3.1.4
 WTForms==3.1.2
